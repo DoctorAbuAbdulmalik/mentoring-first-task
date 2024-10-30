@@ -1,11 +1,15 @@
-<div style="display: flex; flex-wrap: wrap; justify-content: center">
-  <div class="user-card" *ngFor="let user of users">
-    <h2>{{ user.name }}</h2>
-    <p><strong>Username:</strong> {{ user.username }}</p>
-    <p><strong>Email:</strong> {{ user.email }}</p>
-    <p><strong>Phone:</strong> {{ user.phone }}</p>
-    <button class="delete-btn" (click)="deleteUser(user.id, user.name)">
-      УДАЛИТЬ ЮЗЕРА
-    </button>
+<div
+  style="
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding-top: 10px;
+  "
+>
+  <div *ngFor="let user of users">
+    <app-user-card
+      [user]="user"
+      (deleteUser)="deleteUser($event, user.name)"
+    ></app-user-card>
   </div>
 </div>

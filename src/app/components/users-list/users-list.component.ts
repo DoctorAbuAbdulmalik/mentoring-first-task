@@ -1,14 +1,15 @@
 import { Component, inject } from '@angular/core';
-import { NgFor } from '@angular/common';
+import {NgFor, NgIf} from '@angular/common';
 
 import { HeaderComponent } from '../header/header.component';
 import { User } from '../../models/users.model';
 import { UsersApiService } from '../../services/users-api.service';
+import { UserCardComponent } from '../user-card/user-card.component';
 
 @Component({
   selector: 'app-users-list',
   standalone: true,
-  imports: [HeaderComponent, NgFor],
+  imports: [HeaderComponent, NgFor, UserCardComponent],
   templateUrl: './users-list.component.html',
   styleUrl: './users-list.component.scss',
 })
