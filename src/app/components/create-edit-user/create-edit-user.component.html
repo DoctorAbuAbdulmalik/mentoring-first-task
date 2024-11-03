@@ -14,7 +14,7 @@
           "
           class="alert"
         >
-          *Поле имя обязательно.
+          *Поле имя не может быть пустым.
         </small>
       </div>
 
@@ -29,22 +29,22 @@
           "
           class="alert"
         >
-          *Поле логин обязательно.
+          *Поле логин не может быть пустым.
         </small>
       </div>
 
       <div class="input-box">
         <p>EMAIL</p>
         <input placeholder="Введите email" formControlName="email" />
-        <small
-          *ngIf="
-            form.controls['email'].invalid &&
-            (form.controls['email'].dirty || form.controls['email'].touched)
-          "
-          class="alert"
-        >
-          *Поле email обязательно.
-        </small>
+
+        <div *ngIf="form.get('email')?.invalid && (form.get('email')?.touched || form.get('email')?.dirty)" class="alert">
+          <small class="alert" *ngIf="form.get('email')?.errors?.['required']">
+            *Поле email не может быть пустым.
+          </small>
+          <small class="alert" *ngIf="form.get('email')?.errors?.['email']">
+            *Ведите корректный email.
+          </small>
+        </div>
       </div>
 
       <div class="input-box">
@@ -53,11 +53,12 @@
         <small
           *ngIf="
             form.controls['phone'].invalid &&
-            (form.controls['phone'].dirty || form.controls['phone'].touched)
+            (form.controls['phone'].dirty ||
+              form.controls['phone'].touched)
           "
           class="alert"
         >
-          *Поле телефона обязательно.
+          *Поле телефона не может быть пустым.
         </small>
       </div>
       <button
