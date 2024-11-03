@@ -1,0 +1,15 @@
+.container {
+  padding: 10px;
+}
+
+.btnAddUser {
+  margin: 0 auto;
+  display: block;
+}
+
+.users-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  padding-top: 10px;
+}

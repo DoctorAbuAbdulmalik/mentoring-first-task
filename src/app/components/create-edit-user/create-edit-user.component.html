@@ -1,0 +1,73 @@
+<div class="container">
+  <h2 mat-dialog-title>
+    {{ isEdit ? "Редактировать пользователя" : "Добавить пользователя" }}
+  </h2>
+  <div class="column">
+    <form [formGroup]="form" (ngSubmit)="submitForm()">
+      <div class="input-box">
+        <p>ИМЯ</p>
+        <input placeholder="Введите имя" formControlName="name" />
+        <small
+          *ngIf="
+            form.controls['name'].invalid &&
+            (form.controls['name'].dirty || form.controls['name'].touched)
+          "
+          class="alert"
+        >
+          *Поле имя обязательно.
+        </small>
+      </div>
+
+      <div class="input-box">
+        <p>USERNAME</p>
+        <input placeholder="Введите логин" formControlName="userName" />
+        <small
+          *ngIf="
+            form.controls['userName'].invalid &&
+            (form.controls['userName'].dirty ||
+              form.controls['userName'].touched)
+          "
+          class="alert"
+        >
+          *Поле логин обязательно.
+        </small>
+      </div>
+
+      <div class="input-box">
+        <p>EMAIL</p>
+        <input placeholder="Введите email" formControlName="email" />
+        <small
+          *ngIf="
+            form.controls['email'].invalid &&
+            (form.controls['email'].dirty || form.controls['email'].touched)
+          "
+          class="alert"
+        >
+          *Поле email обязательно.
+        </small>
+      </div>
+
+      <div class="input-box">
+        <p>ТЕЛЕФОН</p>
+        <input placeholder="Введите номер телефона" formControlName="phone" />
+        <small
+          *ngIf="
+            form.controls['phone'].invalid &&
+            (form.controls['phone'].dirty || form.controls['phone'].touched)
+          "
+          class="alert"
+        >
+          *Поле телефона обязательно.
+        </small>
+      </div>
+      <button
+        class="btnForm"
+        [ngClass]="{ 'valid-btn': form.valid }"
+        type="submit"
+        [disabled]="form.invalid"
+      >
+        CREATE USER
+      </button>
+    </form>
+  </div>
+</div>

@@ -1,15 +1,12 @@
-<div
-  style="
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    padding-top: 10px;
-  "
->
-  <div *ngFor="let user of usersService.users$ | async">
-    <app-user-card
-      [user]="user"
-      (deleteUser)="deleteUser($event, user.name)"
-    ></app-user-card>
+<app-create-edit-user (createUser)="createUser($event)"></app-create-edit-user>
+
+<div class="container">
+  <div class="users-list">
+    <div *ngFor="let user of users$ | async">
+      <app-user-card
+        [user]="user"
+        (deleteUser)="deleteUser($event, user.name)"
+      ></app-user-card>
+    </div>
   </div>
 </div>
