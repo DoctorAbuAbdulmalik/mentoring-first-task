@@ -37,7 +37,13 @@
         <p>EMAIL</p>
         <input placeholder="Введите email" formControlName="email" />
 
-        <div *ngIf="form.get('email')?.invalid && (form.get('email')?.touched || form.get('email')?.dirty)" class="alert">
+        <div
+          *ngIf="
+            form.get('email')?.invalid &&
+            (form.get('email')?.touched || form.get('email')?.dirty)
+          "
+          class="alert"
+        >
           <small class="alert" *ngIf="form.get('email')?.errors?.['required']">
             *Поле email не может быть пустым.
           </small>
@@ -53,8 +59,7 @@
         <small
           *ngIf="
             form.controls['phone'].invalid &&
-            (form.controls['phone'].dirty ||
-              form.controls['phone'].touched)
+            (form.controls['phone'].dirty || form.controls['phone'].touched)
           "
           class="alert"
         >
