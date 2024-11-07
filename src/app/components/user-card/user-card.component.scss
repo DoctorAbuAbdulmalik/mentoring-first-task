@@ -7,24 +7,51 @@
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
-  justify-content: space-between; /* Распределяем элементы сверху и снизу */
+  justify-content: space-between;
+  transition: transform 0.3s ease;
 
   &:hover {
     background-color: #f5f1f1;
+    transform: scale(1.02);
   }
 }
 
-.delete-btn {
-  background-color: #504e4e;
-  color: white;
-  border: none;
-  padding: 5px 10px;
-  cursor: pointer;
-  border-radius: 4px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-  transition: background-color 0.3s;
+.card-btn {
+  display: flex;
+  justify-content: end;
+  gap: 8px;
 
-  &:hover {
-    background-color: #847e7e;
+  .btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    color: white;
+    transition: transform 0.3s ease; /* Добавляем плавный эффект увеличения */
+
+    &.edit-user {
+      background-color: #c72a68;
+    }
+
+    &.delete-btn {
+      background-color: #c72a68;
+    }
+
+    &:hover {
+      transform: scale(1.1); /* Увеличиваем размер на 10% при наведении */
+    }
+
+    mat-icon {
+      font-size: 20px;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
   }
 }

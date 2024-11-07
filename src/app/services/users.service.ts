@@ -13,11 +13,11 @@ export class UsersService {
     this.usersSubject$.next(users);
   }
 
-  editUser(editeduser: User): void {
+  editUser(editedUser: User): void {
     this.usersSubject$.next(
       this.usersSubject$.value.map((user) => {
-        if (user.id === editeduser.id) {
-          return editeduser;
+        if (user.id === editedUser.id) {
+          return editedUser;
         } else {
           return user;
         }

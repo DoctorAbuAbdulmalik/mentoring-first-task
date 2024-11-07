@@ -1,11 +1,18 @@
-<app-create-edit-user (createUser)="createUser($event)"></app-create-edit-user>
-
 <div class="container">
+  <button
+    matTooltip="Добавить пользователя"
+    matTooltipPosition="right"
+    class="btnAddUser"
+    (click)="openUserDialog()"
+  >
+    ADD USER
+  </button>
   <div class="users-list">
     <div *ngFor="let user of users$ | async">
       <app-user-card
         [user]="user"
         (deleteUser)="deleteUser($event, user.name)"
+        (editUser)="editUser($event)"
       ></app-user-card>
     </div>
   </div>

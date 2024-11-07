@@ -1,9 +1,9 @@
 <div class="container">
-  <h2 mat-dialog-title>
+  <h2>
     {{ isEdit ? "Редактировать пользователя" : "Добавить пользователя" }}
   </h2>
   <div class="column">
-    <form [formGroup]="form" (ngSubmit)="submitForm()">
+    <form [formGroup]="form">
       <div class="input-box">
         <p>ИМЯ</p>
         <input placeholder="Введите имя" formControlName="name" />
@@ -20,12 +20,12 @@
 
       <div class="input-box">
         <p>USERNAME</p>
-        <input placeholder="Введите логин" formControlName="userName" />
+        <input placeholder="Введите логин" formControlName="username" />
         <small
           *ngIf="
-            form.controls['userName'].invalid &&
-            (form.controls['userName'].dirty ||
-              form.controls['userName'].touched)
+            form.controls['username'].invalid &&
+            (form.controls['username'].dirty ||
+              form.controls['username'].touched)
           "
           class="alert"
         >
@@ -66,14 +66,18 @@
           *Поле телефона не может быть пустым.
         </small>
       </div>
-      <button
-        class="btnForm"
-        [ngClass]="{ 'valid-btn': form.valid }"
-        type="submit"
-        [disabled]="form.invalid"
-      >
-        CREATE USER
-      </button>
+
+      <div class="buttons">
+        <button class="btn-cancel" (click)="dialogRef.close()">Отмена</button>
+        <button
+          class="btn-create"
+          [disabled]="form.invalid"
+          type="submit"
+          [mat-dialog-close]="userWithUpdateFields"
+        >
+          {{ isEdit ? "Сохранить" : "Создать" }}
+        </button>
+      </div>
     </form>
   </div>
 </div>

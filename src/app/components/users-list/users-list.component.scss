@@ -5,6 +5,17 @@
 .btnAddUser {
   margin: 0 auto;
   display: block;
+  background-color: #5f6ace;
+  color: #ffffff;
+  border: none;
+  border-radius: 5px;
+  padding: 10px;
+  width: 20%;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #3f4fc5;
+  }
 }
 
 .users-list {

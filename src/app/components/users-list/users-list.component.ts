@@ -1,5 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { AsyncPipe, NgFor } from '@angular/common';
+import { MatDialog } from '@angular/material/dialog';
+import {MatTooltipModule} from '@angular/material/tooltip';
 
 import { HeaderComponent } from '../header/header.component';
 import { UsersApiService } from '../../services/users-api.service';
@@ -16,6 +18,7 @@ import { CreateEditUserComponent } from '../create-edit-user/create-edit-user.co
     UserCardComponent,
     AsyncPipe,
     CreateEditUserComponent,
+    MatTooltipModule,
   ],
   templateUrl: './users-list.component.html',
   styleUrl: './users-list.component.scss',
@@ -26,6 +29,8 @@ export class UsersListComponent {
   readonly usersService = inject(UsersService);
 
   public readonly users$ = this.usersService.users$;
+
+  readonly dialog = inject(MatDialog);
 
   constructor() {
     //здесь вызываем UsersApiService и его метод getUsers(). Подписываемся чтобы получить данные.
@@ -42,11 +47,15 @@ export class UsersListComponent {
     this.usersService.createUser({
       id: new Date().getTime(),
       name: formData.name, //formControlName="name"
-      username: formData.userName, //formControlName="userName"
+      username: formData.username, //formControlName="username"
       email: formData.email, //formControlName="email"
       phone: formData.phone, //formControlName="phone"
     });
     console.log('Данные: ', formData);
+  }
+
+  editUser(user: any) {
+    this.usersService.editUser(user);
   }
 
   deleteUser(userId: number, name: string) {
@@ -56,5 +65,18 @@ export class UsersListComponent {
     if (confirmed) {
       this.usersService.deleteUser(userId);
     }
+  }
+
+  openUserDialog(): void {
+    const dialogRef = this.dialog.open(CreateEditUserComponent, {
+      width: '30%',
+      data: { isEdit: false },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.usersService.createUser(result);
+      }
+    });
   }
 }

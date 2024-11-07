@@ -62,28 +62,46 @@ h2 {
   margin-top: 4px;
 }
 
-.btnForm {
-  width: 100%;
-  padding: 10px;
-  font-size: 16px;
-  font-weight: 600;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.3s ease, color 0.3s ease;
+.buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
 
-  &.valid-btn {
-    background-color: #338536;
-    color: #fff;
+  button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    color: white;
+    font-size: 14px;
+    cursor: pointer;
+    transition: transform 0.2s, background-color 0.3s;
+    outline: none;
 
     &:hover {
-      background-color: #43cb49;
+      transform: scale(1.05);
+    }
+
+    &:disabled {
+      background-color: #aaa;
+      cursor: not-allowed;
+      transform: none;
     }
   }
 
-  &:disabled {
-    background-color: #ddd;
-    color: #aaa;
-    cursor: not-allowed;
+  .btn-cancel {
+    background-color: #d9534f;
+
+    &:hover:not(:disabled) {
+      background-color: #c9302c;
+    }
+  }
+
+  .btn-create {
+    background-color: #5cb85c;
+
+    &:hover:not(:disabled) {
+      background-color: #4cae4c;
+    }
   }
 }

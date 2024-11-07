@@ -3,7 +3,20 @@
   <p><strong>Username:</strong> {{ user.username }}</p>
   <p><strong>Email:</strong> {{ user.email }}</p>
   <p><strong>Phone:</strong> {{ user.phone }}</p>
-  <button class="delete-btn" (click)="onDeleteUser(user.id)">
-    DELETE USER
-  </button>
+  <div class="card-btn">
+    <button
+      matTooltip="Редактировать"
+      class="btn edit-user"
+      (click)="openDialog()"
+    >
+      <mat-icon>edit</mat-icon>
+    </button>
+    <button
+      matTooltip="Удалить"
+      class="btn delete-btn"
+      (click)="onDeleteUser(user.id)"
+    >
+      <mat-icon>delete</mat-icon>
+    </button>
+  </div>
 </div>

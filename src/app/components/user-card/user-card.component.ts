@@ -1,19 +1,40 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { User } from '../../models/users.model';
+import { MatTooltip } from '@angular/material/tooltip';
+import { MatIcon } from '@angular/material/icon';
+import { MatDialog } from '@angular/material/dialog';
+import { CreateEditUserComponent } from '../create-edit-user/create-edit-user.component';
 
 @Component({
   selector: 'app-user-card',
   standalone: true,
-  imports: [],
+  imports: [MatTooltip, MatIcon],
   templateUrl: './user-card.component.html',
   styleUrl: './user-card.component.scss',
 })
 export class UserCardComponent {
   @Input() user!: User;
-
   @Output() deleteUser = new EventEmitter();
+  @Output() editUser = new EventEmitter();
+
+  readonly dialog = inject(MatDialog);
 
   onDeleteUser(userId: number) {
     this.deleteUser.emit(userId);
+  }
+
+  openDialog(): void {
+    const dialogRef = this.dialog.open(CreateEditUserComponent, {
+      data: {
+        isEdit: true,
+        user: this.user,
+      },
+      width: '30%',
+    });
+
+    dialogRef.afterClosed().subscribe((editResult) => {
+      console.log('Edited user data:', editResult);
+      this.editUser.emit(editResult);
+    });
   }
 }
