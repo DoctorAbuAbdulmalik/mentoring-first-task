@@ -1,25 +1,18 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { AsyncPipe, NgFor } from '@angular/common';
 import { MatDialog } from '@angular/material/dialog';
-import {MatTooltipModule} from '@angular/material/tooltip';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
-import { HeaderComponent } from '../header/header.component';
 import { UsersApiService } from '../../services/users-api.service';
 import { UserCardComponent } from '../user-card/user-card.component';
 import { UsersService } from '../../services/users.service';
 import { CreateEditUserComponent } from '../create-edit-user/create-edit-user.component';
+import { User } from '../../models/users.model';
 
 @Component({
   selector: 'app-users-list',
   standalone: true,
-  imports: [
-    HeaderComponent,
-    NgFor,
-    UserCardComponent,
-    AsyncPipe,
-    CreateEditUserComponent,
-    MatTooltipModule,
-  ],
+  imports: [NgFor, UserCardComponent, AsyncPipe, MatTooltipModule],
   templateUrl: './users-list.component.html',
   styleUrl: './users-list.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -33,29 +26,27 @@ export class UsersListComponent {
   readonly dialog = inject(MatDialog);
 
   constructor() {
-    //здесь вызываем UsersApiService и его метод getUsers(). Подписываемся чтобы получить данные.
-    //И эти данные передаем в метод setUsers() сервиса UsersService, которые мы кладем в usersSubject$
-    this.usersApiService.getUsers().subscribe((response: any) => {
-      this.usersService.setUsers(response);
-    });
-
+    this.initializeUsers();
     this.usersService.users$.subscribe((users) => console.log(users));
   }
 
-  //formData это данные которые приходят с отправленной формы компонета CreateEditUserComponent
-  public createUser(formData: any) {
-    this.usersService.createUser({
-      id: new Date().getTime(),
-      name: formData.name, //formControlName="name"
-      username: formData.username, //formControlName="username"
-      email: formData.email, //formControlName="email"
-      phone: formData.phone, //formControlName="phone"
-    });
-    console.log('Данные: ', formData);
+  private initializeUsers() {
+    const usersInLocalStorage = localStorage.getItem('users');
+
+    if (!usersInLocalStorage || usersInLocalStorage === '[]') {
+      // Если localStorage пустой, загружаем с бэкенда и сохраняем в localStorage
+      // Здесь вызываем UsersApiService и его метод getUsers(). Подписываемся чтобы получить данные.
+      // И эти данные передаем в метод setUsers() сервиса UsersService, которые мы кладем в usersSubject$
+      this.usersApiService.getUsers().subscribe((response: any) => {
+        this.usersService.setUsers(response);
+      });
+    }
   }
 
-  editUser(user: any) {
-    this.usersService.editUser(user);
+  editUser(editedUser: any) {
+    if (editedUser && editedUser.id) {
+      this.usersService.editUser(editedUser);
+    }
   }
 
   deleteUser(userId: number, name: string) {
@@ -67,15 +58,20 @@ export class UsersListComponent {
     }
   }
 
-  openUserDialog(): void {
+  openUserDialog(user?: User): void {
     const dialogRef = this.dialog.open(CreateEditUserComponent, {
       width: '30%',
-      data: { isEdit: false },
+      data: { isEdit: !!user, user },
     });
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        this.usersService.createUser(result);
+        if (user) {
+          // Редактирование пользователя
+          this.editUser(result);
+        } else {
+          this.usersService.createUser(result);
+        }
       }
     });
   }

@@ -1,4 +1,4 @@
-import { NgClass, NgIf } from '@angular/common';
+import { NgIf } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import {
   ReactiveFormsModule,
@@ -30,7 +30,7 @@ interface UserForm {
 @Component({
   selector: 'app-create-edit-user',
   standalone: true,
-  imports: [ReactiveFormsModule, NgClass, NgIf, MatDialogClose],
+  imports: [ReactiveFormsModule, NgIf, MatDialogClose],
   templateUrl: './create-edit-user.component.html',
   styleUrl: './create-edit-user.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -64,7 +64,14 @@ export class CreateEditUserComponent {
   get userWithUpdateFields() {
     return {
       ...this.form.value,
-      id: this.data.user?.id,
+      id: this.data.user?.id ?? new Date().getTime(),
     };
+  }
+
+  public submitForm(): void {
+    if (this.form.valid) {
+      const userData = this.userWithUpdateFields;
+      this.dialogRef.close(userData);
+    }
   }
 }

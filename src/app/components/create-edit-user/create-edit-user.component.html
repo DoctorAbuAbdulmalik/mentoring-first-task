@@ -3,7 +3,7 @@
     {{ isEdit ? "Редактировать пользователя" : "Добавить пользователя" }}
   </h2>
   <div class="column">
-    <form [formGroup]="form">
+    <form [formGroup]="form" (ngSubmit)="submitForm()">
       <div class="input-box">
         <p>ИМЯ</p>
         <input placeholder="Введите имя" formControlName="name" />
