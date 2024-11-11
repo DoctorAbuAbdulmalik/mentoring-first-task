@@ -3,10 +3,10 @@
     {{ isEdit ? "Редактировать пользователя" : "Добавить пользователя" }}
   </h2>
   <div class="column">
-    <form [formGroup]="form" (ngSubmit)="submitForm()">
+    <form (ngSubmit)="submitForm()" [formGroup]="form">
       <div class="input-box">
         <p>ИМЯ</p>
-        <input placeholder="Введите имя" formControlName="name" />
+        <input formControlName="name" placeholder="Введите имя"/>
         <small
           *ngIf="
             form.controls['name'].invalid &&
@@ -20,7 +20,7 @@
 
       <div class="input-box">
         <p>USERNAME</p>
-        <input placeholder="Введите логин" formControlName="username" />
+        <input formControlName="username" placeholder="Введите логин"/>
         <small
           *ngIf="
             form.controls['username'].invalid &&
@@ -35,7 +35,7 @@
 
       <div class="input-box">
         <p>EMAIL</p>
-        <input placeholder="Введите email" formControlName="email" />
+        <input formControlName="email" placeholder="Введите email"/>
 
         <div
           *ngIf="
@@ -44,10 +44,10 @@
           "
           class="alert"
         >
-          <small class="alert" *ngIf="form.get('email')?.errors?.['required']">
+          <small *ngIf="form.get('email')?.errors?.['required']" class="alert">
             *Поле email не может быть пустым.
           </small>
-          <small class="alert" *ngIf="form.get('email')?.errors?.['email']">
+          <small *ngIf="form.get('email')?.errors?.['email']" class="alert">
             *Ведите корректный email.
           </small>
         </div>
@@ -55,7 +55,7 @@
 
       <div class="input-box">
         <p>ТЕЛЕФОН</p>
-        <input placeholder="Введите номер телефона" formControlName="phone" />
+        <input formControlName="phone" placeholder="Введите номер телефона"/>
         <small
           *ngIf="
             form.controls['phone'].invalid &&
@@ -68,12 +68,12 @@
       </div>
 
       <div class="buttons">
-        <button class="btn-cancel" (click)="dialogRef.close()">Отмена</button>
+        <button (click)="dialogRef.close()" class="btn-cancel">Отмена</button>
         <button
-          class="btn-create"
           [disabled]="form.invalid"
-          type="submit"
           [mat-dialog-close]="userWithUpdateFields"
+          class="btn-create"
+          type="submit"
         >
           {{ isEdit ? "Сохранить" : "Создать" }}
         </button>

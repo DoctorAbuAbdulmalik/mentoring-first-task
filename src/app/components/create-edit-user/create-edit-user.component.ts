@@ -1,16 +1,7 @@
 import { NgIf } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import {
-  ReactiveFormsModule,
-  FormGroup,
-  FormControl,
-  Validators,
-} from '@angular/forms';
-import {
-  MAT_DIALOG_DATA,
-  MatDialogClose,
-  MatDialogRef,
-} from '@angular/material/dialog';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators, } from '@angular/forms';
+import { MAT_DIALOG_DATA, MatDialogClose, MatDialogRef, } from '@angular/material/dialog';
 import { User } from '../../models/users.model';
 
 interface UserFormControls {
@@ -36,10 +27,10 @@ interface UserForm {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CreateEditUserComponent {
+  public readonly dialogRef = inject(MatDialogRef<CreateEditUserComponent>);
   private readonly data = inject<{ isEdit: boolean; user?: User }>(
     MAT_DIALOG_DATA
   );
-  public readonly dialogRef = inject(MatDialogRef<CreateEditUserComponent>);
   public readonly isEdit: boolean = this.data.isEdit;
 
   public readonly form = new FormGroup<UserFormControls>({

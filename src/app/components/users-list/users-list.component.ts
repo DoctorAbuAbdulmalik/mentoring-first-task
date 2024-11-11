@@ -30,19 +30,6 @@ export class UsersListComponent {
     this.usersService.users$.subscribe((users) => console.log(users));
   }
 
-  private initializeUsers() {
-    const usersInLocalStorage = localStorage.getItem('users');
-
-    if (!usersInLocalStorage || usersInLocalStorage === '[]') {
-      // Если localStorage пустой, загружаем с бэкенда и сохраняем в localStorage
-      // Здесь вызываем UsersApiService и его метод getUsers(). Подписываемся чтобы получить данные.
-      // И эти данные передаем в метод setUsers() сервиса UsersService, которые мы кладем в usersSubject$
-      this.usersApiService.getUsers().subscribe((response: any) => {
-        this.usersService.setUsers(response);
-      });
-    }
-  }
-
   editUser(editedUser: any) {
     if (editedUser && editedUser.id) {
       this.usersService.editUser(editedUser);
@@ -61,7 +48,7 @@ export class UsersListComponent {
   openUserDialog(user?: User): void {
     const dialogRef = this.dialog.open(CreateEditUserComponent, {
       width: '30%',
-      data: { isEdit: !!user, user },
+      data: {isEdit: !!user, user},
     });
 
     dialogRef.afterClosed().subscribe((result) => {
@@ -74,5 +61,18 @@ export class UsersListComponent {
         }
       }
     });
+  }
+
+  private initializeUsers() {
+    const usersInLocalStorage = localStorage.getItem('users');
+
+    if (!usersInLocalStorage || usersInLocalStorage === '[]') {
+      // Если localStorage пустой, загружаем с бэкенда и сохраняем в localStorage
+      // Здесь вызываем UsersApiService и его метод getUsers(). Подписываемся чтобы получить данные.
+      // И эти данные передаем в метод setUsers() сервиса UsersService, которые мы кладем в usersSubject$
+      this.usersApiService.getUsers().subscribe((response: any) => {
+        this.usersService.setUsers(response);
+      });
+    }
   }
 }

@@ -18,4 +18,5 @@ import { MatTooltipModule } from '@angular/material/tooltip';
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss',
 })
-export class HeaderComponent {}
+export class HeaderComponent {
+}

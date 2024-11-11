@@ -4,11 +4,12 @@ import { MatTooltip } from '@angular/material/tooltip';
 import { MatIcon } from '@angular/material/icon';
 import { MatDialog } from '@angular/material/dialog';
 import { CreateEditUserComponent } from '../create-edit-user/create-edit-user.component';
+import { OnlyNumbersPipe } from '../../../only-numbers.pipe';
 
 @Component({
   selector: 'app-user-card',
   standalone: true,
-  imports: [MatTooltip, MatIcon],
+  imports: [MatTooltip, MatIcon, OnlyNumbersPipe],
   templateUrl: './user-card.component.html',
   styleUrl: './user-card.component.scss',
 })
@@ -18,6 +19,7 @@ export class UserCardComponent {
   @Output() editUser = new EventEmitter();
 
   readonly dialog = inject(MatDialog);
+  numbers: any;
 
   onDeleteUser(userId: number) {
     this.deleteUser.emit(userId);
