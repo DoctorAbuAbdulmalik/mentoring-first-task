@@ -31,7 +31,7 @@
     border: none;
     cursor: pointer;
     color: white;
-    transition: transform 0.3s ease; /* Добавляем плавный эффект увеличения */
+    transition: transform 0.3s ease;
 
     &.edit-user {
       background-color: #c72a68;
@@ -42,7 +42,7 @@
     }
 
     &:hover {
-      transform: scale(1.1); /* Увеличиваем размер на 10% при наведении */
+      transform: scale(1.1);
     }
 
     mat-icon {

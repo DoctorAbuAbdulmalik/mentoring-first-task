@@ -1,4 +1,4 @@
-import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { User } from '../../models/users.model';
 import { MatTooltip } from '@angular/material/tooltip';
 import { MatIcon } from '@angular/material/icon';
@@ -12,6 +12,7 @@ import { OnlyNumbersPipe } from '../../../only-numbers.pipe';
   imports: [MatTooltip, MatIcon, OnlyNumbersPipe],
   templateUrl: './user-card.component.html',
   styleUrl: './user-card.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UserCardComponent {
   @Input() user!: User;
@@ -19,9 +20,8 @@ export class UserCardComponent {
   @Output() editUser = new EventEmitter();
 
   readonly dialog = inject(MatDialog);
-  numbers: any;
 
-  onDeleteUser(userId: number) {
+  onDeleteUser(userId: number): void {
     this.deleteUser.emit(userId);
   }
 
@@ -35,7 +35,6 @@ export class UserCardComponent {
     });
 
     dialogRef.afterClosed().subscribe((editResult) => {
-      console.log('Edited user data:', editResult);
       this.editUser.emit(editResult);
     });
   }

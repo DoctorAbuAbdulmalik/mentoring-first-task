@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject } from '@angular/core';
 import { AsyncPipe, NgFor } from '@angular/common';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -8,6 +8,7 @@ import { UserCardComponent } from '../user-card/user-card.component';
 import { UsersService } from '../../services/users.service';
 import { CreateEditUserComponent } from '../create-edit-user/create-edit-user.component';
 import { User } from '../../models/users.model';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-users-list',
@@ -20,23 +21,21 @@ import { User } from '../../models/users.model';
 export class UsersListComponent {
   readonly usersApiService = inject(UsersApiService);
   readonly usersService = inject(UsersService);
-
-  public readonly users$ = this.usersService.users$;
-
   readonly dialog = inject(MatDialog);
+  public readonly users$ = this.usersService.users$;
+  private readonly destroyRef = inject(DestroyRef);
 
   constructor() {
     this.initializeUsers();
-    this.usersService.users$.subscribe((users) => console.log(users));
   }
 
-  editUser(editedUser: any) {
+  editUser(editedUser: User): void {
     if (editedUser && editedUser.id) {
       this.usersService.editUser(editedUser);
     }
   }
 
-  deleteUser(userId: number, name: string) {
+  deleteUser(userId: number, name: string): void {
     const confirmed = window.confirm(
       `Вы действительно хотите удалить пользователя ${name}?`
     );
@@ -54,7 +53,6 @@ export class UsersListComponent {
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         if (user) {
-          // Редактирование пользователя
           this.editUser(result);
         } else {
           this.usersService.createUser(result);
@@ -63,14 +61,16 @@ export class UsersListComponent {
     });
   }
 
-  private initializeUsers() {
+  private initializeUsers(): void {
     const usersInLocalStorage = localStorage.getItem('users');
 
     if (!usersInLocalStorage || usersInLocalStorage === '[]') {
       // Если localStorage пустой, загружаем с бэкенда и сохраняем в localStorage
       // Здесь вызываем UsersApiService и его метод getUsers(). Подписываемся чтобы получить данные.
       // И эти данные передаем в метод setUsers() сервиса UsersService, которые мы кладем в usersSubject$
-      this.usersApiService.getUsers().subscribe((response: any) => {
+      this.usersApiService.getUsers()
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe((response: User[]) => {
         this.usersService.setUsers(response);
       });
     }
