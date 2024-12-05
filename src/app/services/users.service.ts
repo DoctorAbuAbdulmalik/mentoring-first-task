@@ -3,6 +3,8 @@ import { User } from '../models/users.model';
 import { BehaviorSubject } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
+const LOCAL_STORAGE_KEY_USERS = 'users';
+
 @Injectable({
   providedIn: 'root',
 })
@@ -11,13 +13,9 @@ export class UsersService {
 
   private readonly usersSubject$ = new BehaviorSubject<User[]>([]);
   public readonly users$ = this.usersSubject$.asObservable();
-  private readonly localStorageKey = 'users';
-
   constructor() {
     this.loadUsersFromLocalStorage();
-    this.users$
-    .pipe(takeUntilDestroyed(this.destroyRef))
-    .subscribe((users) => {
+    this.users$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((users) => {
       this.saveUsersToLocalStorage(users);
     });
   }
@@ -63,7 +61,7 @@ export class UsersService {
 
   // Загружаем пользователей из local storage
   private loadUsersFromLocalStorage(): void {
-    const usersData = localStorage.getItem(this.localStorageKey);
+    const usersData = localStorage.getItem(LOCAL_STORAGE_KEY_USERS);
     if (usersData) {
       const users = JSON.parse(usersData) as User[];
       this.usersSubject$.next(users);
@@ -72,6 +70,6 @@ export class UsersService {
 
   // Сохраняем пользователей в local storage
   private saveUsersToLocalStorage(users: User[]): void {
-    localStorage.setItem(this.localStorageKey, JSON.stringify(users));
+    localStorage.setItem(LOCAL_STORAGE_KEY_USERS, JSON.stringify(users));
   }
 }
