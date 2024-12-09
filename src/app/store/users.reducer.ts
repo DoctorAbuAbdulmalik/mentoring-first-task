@@ -1,38 +1,28 @@
-import { User } from '../models/users.model';
 import { createReducer, on } from '@ngrx/store';
-import { UsersActions } from './users.actions';
+import { UserActions } from './users.actions';
+import { User } from '../models/users.model';
 
-export interface UserState {
-  users: User[];
-}
-
-const initialState: UserState = {
+const initialState: { users: User[] } = {
   users: [],
 };
-
 export const userReducer = createReducer(
   initialState,
-  on(UsersActions.set, (state, payload) => ({
+  on(UserActions.set, (state, {users}) => ({
     ...state,
-    users: payload.users,
+    users: users,
   })),
-  on(UsersActions.edit, (state, payload) => ({
+  on(UserActions.edit, (state, {editedUser}) => ({
     ...state,
-    users: state.users.map((user) => {
-      if (user.id === payload.user.id) {
-        return payload.user;
-      } else {
-        return user;
-      }
-      // return user.id === user.id ? user : user;
-    })
+    users: state.users.map((user) =>
+      user.id === editedUser.id ? editedUser : user
+    ),
   })),
-  on(UsersActions.create, (state, payload) => ({
+  on(UserActions.create, (state, payload) => ({
     ...state,
     users: [...state.users, payload.user],
   })),
-  on(UsersActions.delete, (state, payload) => ({
+  on(UserActions.delete, (state, {userId}) => ({
     ...state,
-    users: state.users.filter((user) => user.id !== payload.id),
+    users: state.users.filter((user) => user.id !== userId),
   }))
 );

@@ -59,6 +59,22 @@ export class CreateEditUserComponent {
     };
   }
 
+  onCancel(): void {
+    // Если окно в режиме редактирования, сбросьте форму к исходным данным
+    if (this.isEdit && this.data.user) {
+      this.form.setValue({
+        name: this.data.user.name,
+        username: this.data.user.username,
+        email: this.data.user.email,
+        phone: this.data.user.phone
+      });
+    } else {
+      // Если не редактирование, сбрасываем форму в пустое состояние
+      this.form.reset();
+    }
+    this.dialogRef.close();
+  }
+
   public submitForm(): void {
     if (this.form.valid) {
       const userData = this.userWithUpdateFields;

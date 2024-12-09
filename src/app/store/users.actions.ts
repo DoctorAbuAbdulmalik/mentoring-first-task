@@ -1,12 +1,12 @@
 import { createActionGroup, props } from '@ngrx/store';
 import { User } from '../models/users.model';
 
-export const UsersActions = createActionGroup({
-  source: 'Users',
+export const UserActions = createActionGroup({
+  source: 'User',
   events: {
     'set': props<{ users: User[] }>(),
-    'edit': props<{ user: User }>(),
+    'edit': props<{ editedUser: User }>(),
     'create': props<{ user: User }>(),
-    'delete': props<{ id: number }>(),
+    'delete': props<{ userId: number }>(),
   },
 });

@@ -68,7 +68,7 @@
       </div>
 
       <div class="buttons">
-        <button (click)="dialogRef.close()" class="btn-cancel">Отмена</button>
+        <button (click)="onCancel()" class="btn-cancel">Отмена</button>
         <button
           [disabled]="form.invalid"
           [mat-dialog-close]="userWithUpdateFields"

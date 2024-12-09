@@ -15,8 +15,8 @@ export const appConfig: ApplicationConfig = {
     provideAnimationsAsync(),
     provideHttpClient(),
     provideStore({
-        users: userReducer,
+      users: userReducer,
     }),
-    provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode() })
-],
+    provideStoreDevtools({maxAge: 25, logOnly: !isDevMode()}),
+  ],
 };

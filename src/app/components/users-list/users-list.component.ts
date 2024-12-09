@@ -1,29 +1,33 @@
 import { ChangeDetectionStrategy, Component, DestroyRef, inject } from '@angular/core';
-import { AsyncPipe, NgFor } from '@angular/common';
+import { AsyncPipe, JsonPipe, NgFor } from '@angular/common';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { selectUsers } from '../../store/users.selectors';
+import { Store } from '@ngrx/store';
 
 import { UsersApiService } from '../../services/users-api.service';
 import { UserCardComponent } from '../user-card/user-card.component';
-import { UsersService } from '../../services/users.service';
 import { CreateEditUserComponent } from '../create-edit-user/create-edit-user.component';
 import { User } from '../../models/users.model';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { LocalStorageService } from '../../services/local-storage.service';
+import { UserActions } from '../../store/users.actions';
 
 @Component({
   selector: 'app-users-list',
   standalone: true,
-  imports: [NgFor, UserCardComponent, AsyncPipe, MatTooltipModule],
+  imports: [NgFor, UserCardComponent, AsyncPipe, MatTooltipModule, JsonPipe],
   templateUrl: './users-list.component.html',
   styleUrl: './users-list.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UsersListComponent {
   readonly usersApiService = inject(UsersApiService);
-  readonly usersService = inject(UsersService);
   readonly dialog = inject(MatDialog);
-  public readonly users$ = this.usersService.users$;
+  readonly localStorageService = inject(LocalStorageService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly store = inject(Store);
+  public readonly users$ = this.store.select(selectUsers);
 
   constructor() {
     this.initializeUsers();
@@ -31,7 +35,8 @@ export class UsersListComponent {
 
   editUser(editedUser: User): void {
     if (editedUser && editedUser.id) {
-      this.usersService.editUser(editedUser);
+      this.store.dispatch(UserActions.edit({editedUser}));
+      this.updateLocalStorage();
     }
   }
 
@@ -40,7 +45,8 @@ export class UsersListComponent {
       `Вы действительно хотите удалить пользователя ${name}?`
     );
     if (confirmed) {
-      this.usersService.deleteUser(userId);
+      this.store.dispatch(UserActions.delete({userId}));
+      this.updateLocalStorage();
     }
   }
 
@@ -55,24 +61,35 @@ export class UsersListComponent {
         if (user) {
           this.editUser(result);
         } else {
-          this.usersService.createUser(result);
+          this.store.dispatch(UserActions.create({user: result}));
+          this.updateLocalStorage();
         }
       }
     });
   }
 
   private initializeUsers(): void {
-    const usersInLocalStorage = localStorage.getItem('users');
+    const usersInLocalStorage = this.localStorageService.getUser();
 
-    if (!usersInLocalStorage || usersInLocalStorage === '[]') {
+    if (!usersInLocalStorage || usersInLocalStorage.length === 0) {
       // Если localStorage пустой, загружаем с бэкенда и сохраняем в localStorage
-      // Здесь вызываем UsersApiService и его метод getUsers(). Подписываемся чтобы получить данные.
-      // И эти данные передаем в метод setUsers() сервиса UsersService, которые мы кладем в usersSubject$
       this.usersApiService.getUsers()
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe((response: User[]) => {
-        this.usersService.setUsers(response);
-      });
+          this.store.dispatch(UserActions.set({users: response}));
+          this.localStorageService.setUser(response);
+
+        });
+    } else {
+      // Загружаем пользователей из localStorage, если они там есть
+      this.store.dispatch(UserActions.set({users: usersInLocalStorage}));
     }
+  }
+
+  private updateLocalStorage(): void {
+    // Обновляем localStorage, когда происходит изменение списка пользователей
+    this.users$.subscribe((users) => {
+      this.localStorageService.setUser(users);
+    });
   }
 }
