@@ -3,15 +3,14 @@ import { AsyncPipe, JsonPipe, NgFor } from '@angular/common';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { selectUsers } from '../../store/users.selectors';
 import { Store } from '@ngrx/store';
 
 import { UsersApiService } from '../../services/users-api.service';
 import { UserCardComponent } from '../user-card/user-card.component';
 import { CreateEditUserComponent } from '../create-edit-user/create-edit-user.component';
 import { User } from '../../models/users.model';
-import { LocalStorageService } from '../../services/local-storage.service';
 import { UserActions } from '../../store/users.actions';
+import { selectUsers } from '../../store/users.selectors';
 
 @Component({
   selector: 'app-users-list',
@@ -24,7 +23,6 @@ import { UserActions } from '../../store/users.actions';
 export class UsersListComponent {
   readonly usersApiService = inject(UsersApiService);
   readonly dialog = inject(MatDialog);
-  readonly localStorageService = inject(LocalStorageService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly store = inject(Store);
   public readonly users$ = this.store.select(selectUsers);
@@ -36,7 +34,6 @@ export class UsersListComponent {
   editUser(editedUser: User): void {
     if (editedUser && editedUser.id) {
       this.store.dispatch(UserActions.edit({editedUser}));
-      this.updateLocalStorage();
     }
   }
 
@@ -46,7 +43,6 @@ export class UsersListComponent {
     );
     if (confirmed) {
       this.store.dispatch(UserActions.delete({userId}));
-      this.updateLocalStorage();
     }
   }
 
@@ -62,34 +58,17 @@ export class UsersListComponent {
           this.editUser(result);
         } else {
           this.store.dispatch(UserActions.create({user: result}));
-          this.updateLocalStorage();
         }
       }
     });
   }
 
   private initializeUsers(): void {
-    const usersInLocalStorage = this.localStorageService.getUser();
-
-    if (!usersInLocalStorage || usersInLocalStorage.length === 0) {
-      // Если localStorage пустой, загружаем с бэкенда и сохраняем в localStorage
-      this.usersApiService.getUsers()
-        .pipe(takeUntilDestroyed(this.destroyRef))
-        .subscribe((response: User[]) => {
-          this.store.dispatch(UserActions.set({users: response}));
-          this.localStorageService.setUser(response);
-
-        });
-    } else {
-      // Загружаем пользователей из localStorage, если они там есть
-      this.store.dispatch(UserActions.set({users: usersInLocalStorage}));
-    }
-  }
-
-  private updateLocalStorage(): void {
-    // Обновляем localStorage, когда происходит изменение списка пользователей
-    this.users$.subscribe((users) => {
-      this.localStorageService.setUser(users);
-    });
+    this.usersApiService
+      .getUsers()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((response: User[]) => {
+        this.store.dispatch(UserActions.set({users: response}));
+      });
   }
 }
