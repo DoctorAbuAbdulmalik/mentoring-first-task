@@ -11,6 +11,7 @@ import { CreateEditUserComponent } from '../create-edit-user/create-edit-user.co
 import { User } from '../../models/users.model';
 import { UserActions } from '../../store/users.actions';
 import { selectUsers } from '../../store/users.selectors';
+import { filter } from 'rxjs';
 
 @Component({
   selector: 'app-users-list',
@@ -21,8 +22,8 @@ import { selectUsers } from '../../store/users.selectors';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UsersListComponent {
-  readonly usersApiService = inject(UsersApiService);
-  readonly dialog = inject(MatDialog);
+  private readonly usersApiService = inject(UsersApiService);
+  private readonly dialog = inject(MatDialog);
   private readonly destroyRef = inject(DestroyRef);
   private readonly store = inject(Store);
   public readonly users$ = this.store.select(selectUsers);
@@ -52,15 +53,17 @@ export class UsersListComponent {
       data: {isEdit: !!user, user},
     });
 
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result) {
+    dialogRef.afterClosed()
+      .pipe(
+        filter(result => !!result) // Пропускаем только непустые значения
+      )
+      .subscribe((result) => {
         if (user) {
-          this.editUser(result);
+          this.editUser(result); // Если передан user, редактируем.
         } else {
-          this.store.dispatch(UserActions.create({user: result}));
+          this.store.dispatch(UserActions.create({user: result})); // Иначе создаём нового пользователя.
         }
-      }
-    });
+      });
   }
 
   private initializeUsers(): void {

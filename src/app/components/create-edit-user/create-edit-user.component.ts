@@ -2,21 +2,9 @@ import { NgIf } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators, } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogClose, MatDialogRef, } from '@angular/material/dialog';
+
 import { User } from '../../models/users.model';
-
-interface UserFormControls {
-  name: FormControl<string | null>;
-  username: FormControl<string | null>;
-  email: FormControl<string | null>;
-  phone: FormControl<string | null>;
-}
-
-interface UserForm {
-  name: string;
-  username: string;
-  email: string;
-  phone: string;
-}
+import { UserFormControls } from '../../models/form.model';
 
 @Component({
   selector: 'app-create-edit-user',
@@ -34,19 +22,19 @@ export class CreateEditUserComponent {
   public readonly isEdit: boolean = this.data.isEdit;
 
   public readonly form = new FormGroup<UserFormControls>({
-    name: new FormControl<string | null>(
+    name: new FormControl(
       this.data.user?.name || '',
       Validators.required
     ),
-    username: new FormControl<string | null>(
+    username: new FormControl(
       this.data.user?.username || '',
       Validators.required
     ),
-    email: new FormControl<string | null>(this.data.user?.email || '', [
+    email: new FormControl(this.data.user?.email || '', [
       Validators.required,
       Validators.email,
     ]),
-    phone: new FormControl<string | null>(
+    phone: new FormControl(
       this.data.user?.phone || '',
       Validators.required
     ),
@@ -77,8 +65,7 @@ export class CreateEditUserComponent {
 
   public submitForm(): void {
     if (this.form.valid) {
-      const userData = this.userWithUpdateFields;
-      this.dialogRef.close(userData);
+      this.dialogRef.close(this.userWithUpdateFields);
     }
   }
 }

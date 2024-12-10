@@ -5,7 +5,7 @@ import { User } from '../models/users.model';
 
 @Injectable({providedIn: 'root'})
 export class UsersApiService {
-  readonly apiService = inject(HttpClient);
+  private readonly apiService = inject(HttpClient);
   private readonly apiUrl: string = 'https://jsonplaceholder.typicode.com/users';
 
   getUsers(): Observable<User[]> {
